@@ -3,6 +3,9 @@ name = "toiletdb"
 version = "0.1.0"
 authors = ["jakeburden <jburden@gitlab.com>"]
 edition = "2018"
+repository = "https://gitlab.com/jakeburden/toiletdb-rs"
+license = "MIT"
+description = "Flushes an object to a JSON file. Rust implementation of https://github.com/maxogden/toiletdb"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
