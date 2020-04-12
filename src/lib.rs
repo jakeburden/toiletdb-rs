@@ -1,6 +1,7 @@
+//! # ToiletDB 🚽🦀
 //! Flushes an object to a JSON file. Rust implementation of https://github.com/maxogden/toiletdb
 //!
-//! # Examples
+//! ## Examples
 //!
 //! ```
 //! use toiletdb::Toiletdb;
@@ -42,10 +43,9 @@ use std::io::Error;
 use std::path::PathBuf;
 use tempfile::NamedTempFile;
 
-/// Toiletdb Struct with a file, filename, and JSON state
+/// Toiletdb Struct with a file path and JSON state
 #[derive(Debug)]
 pub struct Toiletdb {
-    // file: File,
     path: PathBuf,
     state: HashMap<String, Value>,
 }

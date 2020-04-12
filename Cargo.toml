@@ -6,6 +6,7 @@ edition = "2018"
 repository = "https://gitlab.com/jakeburden/toiletdb-rs"
 license = "MIT"
 description = "Flushes an object to a JSON file. Rust implementation of https://github.com/maxogden/toiletdb"
+reamde = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
