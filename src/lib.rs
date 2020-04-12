@@ -36,8 +36,7 @@
 #![deny(missing_debug_implementations, nonstandard_style)]
 #![warn(missing_docs, missing_doc_code_examples, unreachable_pub)]
 
-use serde_json::Value;
-use std::collections::HashMap;
+use serde_json::{Map, Value};
 use std::fs;
 use std::io::Error;
 use std::path::PathBuf;
@@ -47,18 +46,34 @@ use tempfile::NamedTempFile;
 #[derive(Debug)]
 pub struct Toiletdb {
     path: PathBuf,
-    state: HashMap<String, Value>,
+    state: Map<String, Value>,
 }
 
 impl Toiletdb {
     /// pass the name of the JSON file to use
     pub fn new<P: Into<PathBuf>>(path: P) -> Result<Self, Error> {
         let path = path.into();
+        let maybe_json = fs::read_to_string(&path);
 
-        Ok(Self {
-            path,
-            state: HashMap::new(),
-        })
+        let state = match (path.exists(), maybe_json) {
+            (true, Ok(json)) => match json.len() {
+                // File is empty, set a new empty state
+                0 => Map::new(),
+
+                // JSON file already exist, set state to file contents
+                _ => {
+                    let parsed: Result<Value, serde_json::Error> = serde_json::from_str(&json);
+                    match parsed {
+                        Ok(value) => value.as_object().unwrap().clone(),
+                        Err(_) => panic!("An invalid JSON file already exists on this path."),
+                    }
+                }
+            },
+            (true, Err(_)) => panic!("An invalid JSON file already exists on this path."),
+            (false, _) => Map::new(),
+        };
+
+        Ok(Self { path, state })
     }
 
     /// sets `key` to `val` inside the JSON file
@@ -94,7 +109,7 @@ impl Toiletdb {
 
     /// resets state and deletes the JSON file
     pub fn flush(&mut self) -> Result<(), Error> {
-        self.state = HashMap::new();
+        self.state = Map::new();
         fs::remove_file(&self.path)?;
         Ok(())
     }
